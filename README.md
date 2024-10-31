@@ -4,7 +4,7 @@ Beelink-SER5-Max Hackintosh 是一款基于 AMD Ryzen 5800H 8核 16线程的 Min
 
 **⚠️注意：本机使用的是官方自带的Intel ax200网卡，无法使用隔空投送、随航等功能。如需使用，请某宝购买apple免驱网卡。**
 
-[图片](https://cgartlab.com/wp-content/uploads/2024/10/11730358905_.pic_.jpg)
+![图片](https://cgartlab.com/wp-content/uploads/2024/10/11730358905_.pic_.jpg)
 
 ## 硬件信息
 
