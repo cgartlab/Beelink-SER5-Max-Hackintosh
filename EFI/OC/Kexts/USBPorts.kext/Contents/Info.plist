@@ -22,7 +22,7 @@
 	<string>1.0</string>
 	<key>IOKitPersonalities</key>
 	<dict>
-		<key>MacPro7,1-XHC0</key>
+		<key>iMac20,1-XHC0</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBMergeNub</string>
@@ -41,54 +41,21 @@
 				<key>kUSBSleepPortCurrentLimit</key>
 				<integer>2100</integer>
 				<key>kUSBSleepPowerSupply</key>
-				<integer>4700</integer>
+				<integer>5100</integer>
 				<key>kUSBWakePortCurrentLimit</key>
 				<integer>2100</integer>
 				<key>kUSBWakePowerSupply</key>
-				<integer>4700</integer>
+				<integer>5100</integer>
 				<key>port-count</key>
 				<data>
 				BgAAAA==
 				</data>
 				<key>ports</key>
 				<dict>
-					<key>HS01</key>
-					<dict>
-						<key>UsbConnector</key>
-						<integer>0</integer>
-						<key>name</key>
-						<string>HS01</string>
-						<key>port</key>
-						<data>
-						AQAAAA==
-						</data>
-					</dict>
-					<key>HS02</key>
-					<dict>
-						<key>UsbConnector</key>
-						<integer>3</integer>
-						<key>name</key>
-						<string>HS02</string>
-						<key>port</key>
-						<data>
-						AgAAAA==
-						</data>
-					</dict>
-					<key>HS03</key>
-					<dict>
-						<key>UsbConnector</key>
-						<integer>0</integer>
-						<key>name</key>
-						<string>HS03</string>
-						<key>port</key>
-						<data>
-						BAAAAA==
-						</data>
-					</dict>
 					<key>PRT3</key>
 					<dict>
 						<key>UsbConnector</key>
-						<integer>0</integer>
+						<integer>3</integer>
 						<key>name</key>
 						<string>PRT3</string>
 						<key>port</key>
@@ -96,23 +63,23 @@
 						AwAAAA==
 						</data>
 					</dict>
-					<key>SS01</key>
+					<key>PRT5</key>
 					<dict>
 						<key>UsbConnector</key>
 						<integer>9</integer>
 						<key>name</key>
-						<string>SS01</string>
+						<string>PRT5</string>
 						<key>port</key>
 						<data>
 						BQAAAA==
 						</data>
 					</dict>
-					<key>SS02</key>
+					<key>PRT6</key>
 					<dict>
 						<key>UsbConnector</key>
 						<integer>3</integer>
 						<key>name</key>
-						<string>SS02</string>
+						<string>PRT6</string>
 						<key>port</key>
 						<data>
 						BgAAAA==
@@ -121,9 +88,9 @@
 				</dict>
 			</dict>
 			<key>model</key>
-			<string>MacPro7,1</string>
+			<string>iMac20,1</string>
 		</dict>
-		<key>MacPro7,1-XHC1-1022_1639</key>
+		<key>iMac20,1-XHC1-1022_1639</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBMergeNub</string>
@@ -142,54 +109,32 @@
 				<key>kUSBSleepPortCurrentLimit</key>
 				<integer>2100</integer>
 				<key>kUSBSleepPowerSupply</key>
-				<integer>4700</integer>
+				<integer>5100</integer>
 				<key>kUSBWakePortCurrentLimit</key>
 				<integer>2100</integer>
 				<key>kUSBWakePowerSupply</key>
-				<integer>4700</integer>
+				<integer>5100</integer>
 				<key>port-count</key>
 				<data>
 				BgAAAA==
 				</data>
 				<key>ports</key>
 				<dict>
-					<key>HS01</key>
+					<key>PRT1</key>
 					<dict>
 						<key>UsbConnector</key>
-						<integer>0</integer>
+						<integer>9</integer>
 						<key>name</key>
-						<string>HS01</string>
+						<string>PRT1</string>
 						<key>port</key>
 						<data>
 						AQAAAA==
 						</data>
 					</dict>
-					<key>HS02</key>
-					<dict>
-						<key>UsbConnector</key>
-						<integer>3</integer>
-						<key>name</key>
-						<string>HS02</string>
-						<key>port</key>
-						<data>
-						AgAAAA==
-						</data>
-					</dict>
-					<key>HS03</key>
-					<dict>
-						<key>UsbConnector</key>
-						<integer>255</integer>
-						<key>name</key>
-						<string>HS03</string>
-						<key>port</key>
-						<data>
-						BAAAAA==
-						</data>
-					</dict>
 					<key>PRT3</key>
 					<dict>
 						<key>UsbConnector</key>
-						<integer>255</integer>
+						<integer>3</integer>
 						<key>name</key>
 						<string>PRT3</string>
 						<key>port</key>
@@ -197,23 +142,23 @@
 						AwAAAA==
 						</data>
 					</dict>
-					<key>SS01</key>
+					<key>PRT5</key>
 					<dict>
 						<key>UsbConnector</key>
 						<integer>9</integer>
 						<key>name</key>
-						<string>SS01</string>
+						<string>PRT5</string>
 						<key>port</key>
 						<data>
 						BQAAAA==
 						</data>
 					</dict>
-					<key>SS02</key>
+					<key>PRT6</key>
 					<dict>
 						<key>UsbConnector</key>
 						<integer>3</integer>
 						<key>name</key>
-						<string>SS02</string>
+						<string>PRT6</string>
 						<key>port</key>
 						<data>
 						BgAAAA==
@@ -222,7 +167,7 @@
 				</dict>
 			</dict>
 			<key>model</key>
-			<string>MacPro7,1</string>
+			<string>iMac20,1</string>
 		</dict>
 	</dict>
 	<key>OSBundleRequired</key>
