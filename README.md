@@ -20,6 +20,13 @@ Beelink-SER5-Max Hackintosh 是一款基于 AMD Ryzen 5800H 8核 16线程的 Min
 
 ## 更新记录
 
+- 2024-11-30
+  - Lilu.kext 更新 1.7.0
+  - NVMeFix.kext 更新 1.1.2
+  - IntelBluetoothInjector.kext 更新 2.5.0
+  - IntelBTPatcher.kext 更新 2.5.0
+  - IntelBluetoothFirmware.kext 更新 2.5.0
+
 - 2024-10-26
   - BlueToolFixup.kext 已更新至 1.2.1
 - 2024-09-20: 初始化项目
