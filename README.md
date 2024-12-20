@@ -16,9 +16,12 @@ Beelink-SER5-Max Hackintosh 是一款基于 AMD Ryzen 5800H 8核 16线程的 Min
 ## 系统信息
 
 - macOS: Ventura 13.7.1
-- OpenCore: 1.0.2
+- OpenCore: 1.0.3
 
 ## 更新记录
+
+- 2024-12-21
+  - 更新 OpenCore 至 1.0.3
 
 - 2024-11-30
   - Lilu.kext 更新 1.7.0
