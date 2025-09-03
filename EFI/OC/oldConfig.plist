@@ -79,6 +79,8 @@
                 <false/>
                 <key>AvoidRuntimeDefrag</key>
                 <true/>
+                <key>ClearTaskSwitchBit</key>
+                <false/>
                 <key>DevirtualiseMmio</key>
                 <false/>
                 <key>DisableSingleUser</key>
@@ -170,7 +172,7 @@
                     <key>BundlePath</key>
                     <string>Lilu.kext</string>
                     <key>Comment</key>
-                    <string>V1.7.0 | Lilu.kext</string>
+                    <string>V1.7.2 | Lilu.kext</string>
                     <key>Enabled</key>
                     <true/>
                     <key>ExecutablePath</key>
@@ -188,7 +190,7 @@
                     <key>BundlePath</key>
                     <string>VirtualSMC.kext</string>
                     <key>Comment</key>
-                    <string>V1.3.4</string>
+                    <string>V1.3.8</string>
                     <key>Enabled</key>
                     <true/>
                     <key>ExecutablePath</key>
@@ -296,7 +298,7 @@
                     <key>BundlePath</key>
                     <string>NVMeFix.kext</string>
                     <key>Comment</key>
-                    <string>V1.1.2 | NVMeFix.kext</string>
+                    <string>V1.1.4 | NVMeFix.kext</string>
                     <key>Enabled</key>
                     <false/>
                     <key>ExecutablePath</key>
@@ -314,7 +316,7 @@
                     <key>BundlePath</key>
                     <string>RestrictEvents.kext</string>
                     <key>Comment</key>
-                    <string>V1.1.5 | RestrictEvents.kext</string>
+                    <string>V1.1.7 | RestrictEvents.kext</string>
                     <key>Enabled</key>
                     <true/>
                     <key>ExecutablePath</key>
@@ -404,7 +406,7 @@
                     <key>BundlePath</key>
                     <string>FeatureUnlock.kext</string>
                     <key>Comment</key>
-                    <string>V1.1.7</string>
+                    <string>V1.1.9</string>
                     <key>Enabled</key>
                     <true/>
                     <key>ExecutablePath</key>
