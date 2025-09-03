@@ -1,3 +1,4 @@
 
 .DS_Store
 EFI/BOOT/._BOOTx64.efi
+.vscode/settings.json
