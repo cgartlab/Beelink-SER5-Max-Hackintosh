@@ -1,4 +1,4 @@
-![图片](https://cgartlab.com/wp-content/uploads/2024/12/e6275750ca48ad6.webp)
+![图片]([https://cgartlab.com/wp-content/uploads/2024/12/e6275750ca48ad6.webp](https://cgartlab.com/_astro/%E9%80%82%E5%90%88%E7%9A%84%E6%89%8D%E6%9C%80%E5%A5%BD%EF%BC%8C%E5%B9%B4%E5%BA%95%E6%88%91%E9%80%89%E6%8B%A9%E6%96%B0%E8%A3%85%E4%B8%80%E5%8F%B0%E2%80%9CMac%20mini%E2%80%9D-1754592163345.CJP98nBT_1OlfKb.webp))
 
 # 介绍
 
