@@ -54,7 +54,7 @@ revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay
 |------|------|------|
 | Lilu.kext | 1.7.3 | 核心补丁框架 |
 | VirtualSMC.kext | 1.3.8 | SMC 模拟 |
-| NootedRed.kext | 0.8.10 | AMD iGPU 驱动 |
+| NootedRed.kext | 0.8.3 | AMD iGPU 驱动 |
 | AMDRyzenCPUPowerManagement.kext | 0.7.2 | AMD CPU 电源管理 |
 | SMCAMDProcessor.kext | 1.0 | AMD 处理器传感器 |
 | AppleALC_5800H.kext | 1.8.5 | 声卡驱动 (layout-id 58) |
@@ -73,12 +73,15 @@ revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay
 | UTBMap.kext | 1.1 | USB 映射 |
 | SMCRadeonSensors.kext | 2.4.0 | AMD GPU 传感器 |
 | AppleMCEReporterDisabler.kext | 1.2 | MCE 报告禁用 |
-| Display-5c98-270.kext | - | 显示器 EDID 修复 |
-| Display-2613-2700.kext | - | 显示器 EDID 修复 |
 
 以及多个版本 AirportItlwm 以支持跨版本启动（Sonoma 14.4+ / Sonoma / Monterey / BigSur）。
 
 ## 更新记录
+
+### 2026-07-22
+- NootedRed 降回 0.8.3（从 0.8.10）
+- 移除 Display-5c98-270.kext、Display-2613-2700.kext 显示器 EDID 修复
+- 清理冗余配置，统一 config.plist 格式
 
 ### 2026-07-20
 - 优化启动参数：移除 `debug=0x100` `-lilubetaall`，新增 `darkwake=0` `-NRedDPDelay` 📺
