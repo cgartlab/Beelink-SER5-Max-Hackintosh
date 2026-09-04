@@ -3,3 +3,4 @@
 ._*
 .vscode/settings.json
 EFI/OC/oldConfig.plist
+.agents/
