@@ -16,7 +16,7 @@ EFI/
     └── Resources/             # OpenCanopy GUI theme (DalianSky\BeeLink)
 .github/workflows/
 ├── argus-review.yml           # CI: Argus-Flash review on PRs
-└── jekyll-gh-pages.yml        # Stale/unused (not a Jekyll site)
+└── pages-deploy.yml           # Deploy static GitHub Pages site
 ```
 
 ## Hardware
@@ -64,7 +64,7 @@ Do not enable them without testing.
 ## CI
 
 - **Argus-Flash** (argus-review.yml): Runs on PR open/sync. Uses a GitHub App token; no manual setup needed.
-- **Jekyll Pages** (jekyll-gh-pages.yml): Stale/ignored. Not relevant to this repo.
+- **Pages** (pages-deploy.yml): Deploys a static GitHub Pages site on push to `main` or manual dispatch. Copies only the root `index.html` and `.nojekyll` into `dist/` — it does not package the EFI binaries.
 
 ## What to update
 

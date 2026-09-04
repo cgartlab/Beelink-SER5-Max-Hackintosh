@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Beelink SER5 Max Hackintosh —— 基于 AMD Ryzen 7 5800H 的 Mini 主机，采用 OpenCore 引导的黑苹果 EFI 配置仓库。">
+  <meta name="color-scheme" content="dark light">
+  <title>Beelink SER5 Max Hackintosh</title>
+  <style>
+    /* ============================================================
+       Design Tokens
+       ============================================================ */
+    :root {
+      --bg: #0a0e14;
+      --bg-soft: #10151d;
+      --bg-elevated: #161c26;
+      --border: #232b38;
+      --border-strong: #2e3949;
+      --text: #d7dde6;
+      --text-dim: #8b96a8;
+      --text-faint: #5c6675;
+      --accent: #38bdf8;      /* 科技蓝 */
+      --accent-strong: #0ea5e9;
+      --accent-dim: rgba(56, 189, 248, 0.12);
+      --green: #34d399;       /* boot-arg / 成功 */
+      --amber: #fbbf24;       /* 警告 */
+      --amber-strong: #f59e0b;
+      --red: #f87171;
+      --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+              "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      --maxw: 980px;
+    }
+
+    /* 亮色主题覆写 */
+    [data-theme="light"] {
+      --bg: #f6f8fb;
+      --bg-soft: #ffffff;
+      --bg-elevated: #ffffff;
+      --border: #e3e8ef;
+      --border-strong: #cbd5e1;
+      --text: #1c2534;
+      --text-dim: #52607a;
+      --text-faint: #8492a8;
+      --accent: #0369a1;
+      --accent-strong: #0284c7;
+      --accent-dim: rgba(3, 105, 161, 0.08);
+      --green: #059669;
+      --amber: #b45309;
+      --amber-strong: #92400e;
+      --red: #dc2626;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    /* ============================================================
+       Base
+       ============================================================ */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* 顶部科技网格氛围 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(1000px 500px at 80% -10%, var(--accent-dim), transparent 60%),
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 100% 100%, 42px 42px, 42px 42px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .wrap {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 22px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ============================================================
+       Top bar (theme toggle)
+       ============================================================ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .brand {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand .dot { color: var(--green); }
+    .theme-toggle {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--text-dim);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    .hero { padding: 72px 0 48px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-strong);
+      background: var(--accent-dim);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .eyebrow .pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(56,189,248,0.5); }
+      70%  { box-shadow: 0 0 0 8px rgba(56,189,248,0); }
+      100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
+    }
+    h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.2;
+      margin: 0 0 16px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    h1 .hl {
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .sub {
+      font-size: 18px;
+      color: var(--text-dim);
+      margin: 0 0 28px;
+      max-width: 620px;
+    }
+    .sub .mono { font-family: var(--mono); color: var(--text); }
+
+    .specs-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .chip {
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      border-radius: var(--radius-sm);
+      color: var(--text-dim);
+    }
+    .chip b { color: var(--text); font-weight: 600; }
+
+    /* ============================================================
+       Alert
+       ============================================================ */
+    .alert {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      border: 1px solid var(--amber);
+      background: color-mix(in srgb, var(--amber) 10%, var(--bg-soft));
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin: 32px 0;
+    }
+    .alert .ico {
+      font-size: 20px;
+      line-height: 1.3;
+      flex-shrink: 0;
+    }
+    .alert .msg b { color: var(--amber-strong); }
+    .alert .msg p { margin: 0; color: var(--text-dim); }
+    .alert .msg p + p { margin-top: 4px; }
+
+    /* ============================================================
+       Sections
+       ============================================================ */
+    section { padding: 40px 0; }
+    section + section { border-top: 1px solid var(--border); }
+    .sec-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .sec-head .tag {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    h2 {
+      font-size: 24px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .sec-desc { color: var(--text-dim); font-size: 15px; margin: -12px 0 22px; }
+
+    /* ============================================================
+       Tables
+       ============================================================ */
+    .table-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      text-align: left;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    thead th {
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-faint);
+      background: var(--bg-elevated);
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--accent-dim); }
+    td .mono, .kv .mono { font-family: var(--mono); }
+    .component { font-weight: 600; white-space: nowrap; }
+    .kext-name { font-family: var(--mono); font-weight: 600; }
+    .ver {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .note { color: var(--text-dim); font-size: 14px; }
+    .note .mono { color: var(--text); }
+
+    /* ============================================================
+       Boot args
+       ============================================================ */
+    .codeblock {
+      font-family: var(--mono);
+      font-size: 13.5px;
+      background: #05080c;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      overflow-x: auto;
+      color: var(--green);
+      margin: 0 0 22px;
+      white-space: pre;
+      line-height: 1.7;
+    }
+    [data-theme="light"] .codeblock { background: #f0f4f8; color: #065f46; }
+
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .kv {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-soft);
+      padding: 14px 16px;
+    }
+    .kv .k {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+    .kv .v { font-size: 14px; color: var(--text); }
+
+    .sip-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .sip-list li {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-soft);
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+    .sip-list .k { color: var(--text-dim); display: block; font-size: 13px; margin-bottom: 4px; }
+    .sip-list .mono { font-family: var(--mono); color: var(--text); }
+
+    /* ============================================================
+       Timeline
+       ============================================================ */
+    .timeline {
+      position: relative;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border-strong);
+    }
+    .tl-item { position: relative; padding: 0 0 26px 40px; }
+    .tl-item:last-child { padding-bottom: 4px; }
+    .tl-item::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--accent);
+    }
+    .tl-item:first-child::before { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-dim); }
+    .tl-date {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .tl-body { color: var(--text-dim); font-size: 14.5px; }
+    .tl-body ul { margin: 0; padding-left: 18px; }
+    .tl-body li { margin-bottom: 3px; }
+    .tl-body .mono { font-family: var(--mono); color: var(--text); }
+
+    /* ============================================================
+       Credits
+       ============================================================ */
+    .credits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .credit {
+      display: block;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-soft);
+      padding: 18px;
+      color: var(--text);
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .credit:hover {
+      border-color: var(--accent);
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .credit .name {
+      font-weight: 700;
+      font-size: 16px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .credit .desc { color: var(--text-dim); font-size: 13.5px; margin: 0; }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      padding: 30px 0 44px;
+      color: var(--text-faint);
+      font-size: 13px;
+    }
+    footer .mono { font-family: var(--mono); }
+
+    /* ============================================================
+       Responsive
+       ============================================================ */
+    @media (max-width: 640px) {
+      .hero { padding: 48px 0 32px; }
+      .table-card { overflow-x: auto; }
+      table { min-width: 560px; }
+      .component { white-space: normal; }
+    }
+
+    /* 尊重系统偏好（若 JS 未设置主题） */
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) { --bg:#f6f8fb; --bg-soft:#fff; --bg-elevated:#fff;
+        --border:#e3e8ef; --border-strong:#cbd5e1; --text:#1c2534; --text-dim:#52607a;
+        --text-faint:#8492a8; --accent:#0369a1; --accent-strong:#0284c7;
+        --accent-dim:rgba(3,105,161,0.08); --green:#059669; --amber:#b45309;
+        --amber-strong:#92400e; --red:#dc2626; --shadow:0 10px 30px rgba(15,23,42,0.08); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航栏 -->
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <span class="brand"><span class="dot">●</span> EFI / OpenCore</span>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="切换亮色 / 暗色模式">🌙 暗色</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="page-title">
+      <span class="eyebrow"><span class="pulse"></span> Hackintosh EFI Project</span>
+      <h1 id="page-title">Beelink SER5 Max <span class="hl">Hackintosh</span></h1>
+      <p class="sub">
+        基于 AMD <span class="mono">Ryzen 7 5800H</span> 的 Mini 主机，采用
+        <span class="mono">OpenCore</span> 引导的黑苹果 EFI 配置仓库。
+      </p>
+      <div class="specs-strip" aria-label="核心规格">
+        <span class="chip">CPU <b>Ryzen 7 5800H</b></span>
+        <span class="chip">iGPU <b>NootedRed</b></span>
+        <span class="chip">OpenCore <b>1.0.6</b></span>
+        <span class="chip">macOS <b>Ventura 13.7.8</b></span>
+        <span class="chip">SMBIOS <b>iMac20,1</b></span>
+      </div>
+
+      <!-- AX200 警告条 -->
+      <div class="alert" role="alert">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <div class="msg">
+          <p><b>Apple 生态功能受限</b></p>
+          <p>本机使用 <span class="mono">Intel AX200</span> 无线网卡，<b>不支持</b>隔空投送、随航等 Apple 生态功能。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 硬件信息 -->
+    <section id="hardware" aria-labelledby="h-hardware">
+      <div class="sec-head">
+        <span class="tag">01</span>
+        <h2 id="h-hardware">硬件信息</h2>
+      </div>
+      <div class="table-card">
+        <table>
+          <caption class="visually-hidden" style="position:absolute;left:-9999px;">硬件组件与型号对照表</caption>
+          <thead>
+            <tr><th scope="col">组件</th><th scope="col">型号</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="component">CPU</td><td class="mono">AMD Ryzen 7 5800H (8核/16线程)</td></tr>
+            <tr><td class="component">内存</td><td class="mono">32GB DDR4 3200MHz</td></tr>
+            <tr><td class="component">硬盘</td><td class="mono">1TB NVMe SSD</td></tr>
+            <tr><td class="component">iGPU</td><td class="mono">AMD Radeon Graphics (NootedRed)</td></tr>
+            <tr><td class="component">有线网卡</td><td class="mono">Realtek RTL8125 2.5GbE</td></tr>
+            <tr><td class="component">无线网卡</td><td class="mono">Intel AX200 (WiFi 6 + 蓝牙 5.0)</td></tr>
+            <tr><td class="component">声卡</td><td class="mono">Realtek ALC (layout-id=58)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 软件信息 -->
+    <section id="software" aria-labelledby="h-software">
+      <div class="sec-head">
+        <span class="tag">02</span>
+        <h2 id="h-software">软件信息</h2>
+      </div>
+      <div class="kv-grid">
+        <div class="kv"><span class="k">macOS</span><span class="v">Ventura 13.7.8</span></div>
+        <div class="kv"><span class="k">OpenCore</span><span class="v">1.0.6</span></div>
+        <div class="kv"><span class="k">SMBIOS</span><span class="v">iMac20,1</span></div>
+      </div>
+
+      <!-- 启动参数 -->
+      <h3 style="font-size:18px;margin:34px 0 14px;">启动参数 (boot-args)</h3>
+      <pre class="codeblock" aria-label="启动参数 boot-args">revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay</pre>
+      <div class="table-card">
+        <table>
+          <caption class="visually-hidden" style="position:absolute;left:-9999px;">启动参数及其作用对照表</caption>
+          <thead>
+            <tr><th scope="col">参数</th><th scope="col">作用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="kext-name">revpatch=sbvmm</td><td>启用 SecureBootModel 虚拟机补丁</td></tr>
+            <tr><td class="kext-name">revblock=media</td><td>阻止系统更新推送</td></tr>
+            <tr><td class="kext-name">keepsyms=1</td><td>保留内核符号，便于 panic 调试</td></tr>
+            <tr><td class="kext-name">alcid=58</td><td>声卡 layout-id</td></tr>
+            <tr><td class="kext-name">darkwake=0</td><td>优化休眠唤醒</td></tr>
+            <tr><td class="kext-name">-NRedDPDelay</td><td>NootedRed DP 显示延迟修复</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SIP 与安全设置 -->
+      <h3 style="font-size:18px;margin:34px 0 14px;">SIP 与安全设置</h3>
+      <ul class="sip-list">
+        <li><span class="k">SIP</span><span class="mono">完全启用 (<span>csr-active-config: AAAAAA==</span>)</span></li>
+        <li><span class="k">SecureBootModel</span><span class="mono">j160</span></li>
+        <li><span class="k">Vault</span><span class="mono">Optional</span></li>
+        <li><span class="k">BlacklistAppleUpdate</span><span class="mono">已启用</span></li>
+      </ul>
+    </section>
+
+    <!-- Kexts -->
+    <section id="kexts" aria-labelledby="h-kexts">
+      <div class="sec-head">
+        <span class="tag">03</span>
+        <h2 id="h-kexts">加载的 Kexts</h2>
+      </div>
+      <p class="sec-desc">已加载的 21 个内核扩展，按 README 列表呈现。</p>
+      <div class="table-card">
+        <table>
+          <caption class="visually-hidden" style="position:absolute;left:-9999px;">已加载的内核扩展列表</caption>
+          <thead>
+            <tr><th scope="col">Kext</th><th scope="col">版本</th><th scope="col">说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="kext-name">Lilu.kext</td><td><span class="ver">1.7.3</span></td><td>核心补丁框架</td></tr>
+            <tr><td class="kext-name">VirtualSMC.kext</td><td><span class="ver">1.3.8</span></td><td>SMC 模拟</td></tr>
+            <tr><td class="kext-name">NootedRed.kext</td><td><span class="ver">1.0.0</span></td><td>AMD iGPU 驱动</td></tr>
+            <tr><td class="kext-name">AMDRyzenCPUPowerManagement.kext</td><td><span class="ver">0.7.2</span></td><td>AMD CPU 电源管理</td></tr>
+            <tr><td class="kext-name">SMCAMDProcessor.kext</td><td><span class="ver">1.0</span></td><td>AMD 处理器传感器</td></tr>
+            <tr><td class="kext-name">AppleALC_5800H.kext</td><td><span class="ver">1.8.5</span></td><td>声卡驱动 (layout-id 58)</td></tr>
+            <tr><td class="kext-name">RealtekRTL8111.kext</td><td><span class="ver">3.0.4</span></td><td>有线网卡驱动</td></tr>
+            <tr><td class="kext-name">AirportItlwm_for_Ventura.kext</td><td><span class="ver">2.2.0</span></td><td>Intel WiFi (Ventura)</td></tr>
+            <tr><td class="kext-name">BFixup.kext</td><td><span class="ver">1.0.1</span></td><td>AMD 蓝牙修复</td></tr>
+            <tr><td class="kext-name">BlueToolFixup.kext</td><td><span class="ver">2.7.2</span></td><td>蓝牙固件加载</td></tr>
+            <tr><td class="kext-name">IntelBluetoothFirmware.kext</td><td><span class="ver">2.5.0</span></td><td>Intel 蓝牙固件</td></tr>
+            <tr><td class="kext-name">IntelBTPatcher.kext</td><td><span class="ver">2.5.0</span></td><td>Intel 蓝牙补丁</td></tr>
+            <tr><td class="kext-name">IntelBluetoothInjector.kext</td><td><span class="ver">2.5.0</span></td><td>Intel 蓝牙注入</td></tr>
+            <tr><td class="kext-name">FeatureUnlock.kext</td><td><span class="ver">1.1.9</span></td><td>解锁 Sidecar 等功能</td></tr>
+            <tr><td class="kext-name">NVMeFix.kext</td><td><span class="ver">1.1.4</span></td><td>NVMe 电源管理修复</td></tr>
+            <tr><td class="kext-name">RestrictEvents.kext</td><td><span class="ver">1.1.7</span></td><td>事件限制 (禁用更新提示等)</td></tr>
+            <tr><td class="kext-name">USBPorts.kext</td><td><span class="ver">1.0</span></td><td>USB 端口定制</td></tr>
+            <tr><td class="kext-name">USBToolBox.kext</td><td><span class="ver">1.1.1</span></td><td>USB 工具集</td></tr>
+            <tr><td class="kext-name">UTBMap.kext</td><td><span class="ver">1.1</span></td><td>USB 映射</td></tr>
+            <tr><td class="kext-name">SMCRadeonSensors.kext</td><td><span class="ver">2.4.0</span></td><td>AMD GPU 传感器</td></tr>
+            <tr><td class="kext-name">AppleMCEReporterDisabler.kext</td><td><span class="ver">1.2</span></td><td>MCE 报告禁用</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        以及多个版本 <span class="mono">AirportItlwm</span> 以支持跨版本启动
+        <span class="mono">(Sonoma 14.4+ / Sonoma / Monterey / BigSur)</span>。
+      </p>
+    </section>
+
+    <!-- 更新记录 -->
+    <section id="changelog" aria-labelledby="h-changelog">
+      <div class="sec-head">
+        <span class="tag">04</span>
+        <h2 id="h-changelog">更新记录</h2>
+      </div>
+      <ol class="timeline">
+        <li class="tl-item">
+          <span class="tl-date">2026-09-05</span>
+          <div class="tl-body"><ul>
+            <li><span class="mono">NootedRed</span> 升级至 1.0.0（官方正式版，bundle ID 改为 com.ChefKissInc.NootedRed）</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2026-07-25</span>
+          <div class="tl-body"><ul>
+            <li><span class="mono">NootedRed</span> 升级至 0.8.10（回退 07-22 的降级操作）</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2026-07-22</span>
+          <div class="tl-body"><ul>
+            <li><span class="mono">NootedRed</span> 降回 0.8.3（从 0.8.10）</li>
+            <li>移除 <span class="mono">Display-5c98-270.kext</span>、<span class="mono">Display-2613-2700.kext</span> 显示器 EDID 修复</li>
+            <li>清理冗余配置，统一 config.plist 格式</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2026-07-20</span>
+          <div class="tl-body"><ul>
+            <li>优化启动参数：移除 <span class="mono">debug=0x100</span> <span class="mono">-lilubetaall</span>，新增 <span class="mono">darkwake=0</span> <span class="mono">-NRedDPDelay</span> 📺</li>
+            <li><span class="mono">NootedRed</span> 更新至 0.8.10</li>
+            <li><span class="mono">Lilu</span> 更新至 1.7.3</li>
+            <li><span class="mono">BlueToolFixup</span> 更新至 2.7.2</li>
+            <li>新增 <span class="mono">Display-2613-2700.kext</span>、<span class="mono">Display-5c98-270.kext</span> 显示器 EDID 修复</li>
+            <li>清理冗余 kext 和旧配置文件，统一为单 config.plist</li>
+            <li>新增 AGENTS.md 智能代理指导文件</li>
+            <li>接入 Argus-Flash CI 自动审查</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2025-12-02</span>
+          <div class="tl-body"><ul>
+            <li>更新 <span class="mono">OpenCore</span> 至 1.0.6</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2025-09-04</span>
+          <div class="tl-body"><ul>
+            <li>更新 <span class="mono">OpenCore</span> 至 1.0.5</li>
+            <li>其他驱动例行更新</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2025-03-06</span>
+          <div class="tl-body"><ul>
+            <li>更新 <span class="mono">OpenCore</span> 至 1.0.4</li>
+            <li>其他驱动例行更新</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2024-12-21</span>
+          <div class="tl-body"><ul>
+            <li>更新 <span class="mono">OpenCore</span> 至 1.0.3</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2024-11-30</span>
+          <div class="tl-body"><ul>
+            <li><span class="mono">Lilu.kext</span> 更新 1.7.0</li>
+            <li><span class="mono">NVMeFix.kext</span> 更新 1.1.2</li>
+            <li><span class="mono">IntelBluetoothInjector.kext</span> 更新 2.5.0</li>
+            <li><span class="mono">IntelBTPatcher.kext</span> 更新 2.5.0</li>
+            <li><span class="mono">IntelBluetoothFirmware.kext</span> 更新 2.5.0</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2024-10-26</span>
+          <div class="tl-body"><ul>
+            <li><span class="mono">BlueToolFixup.kext</span> 更新至 1.2.1</li>
+          </ul></div>
+        </li>
+        <li class="tl-item">
+          <span class="tl-date">2024-09-20</span>
+          <div class="tl-body"><ul>
+            <li>初始化项目</li>
+          </ul></div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 鸣谢 -->
+    <section id="credits" aria-labelledby="h-credits">
+      <div class="sec-head">
+        <span class="tag">05</span>
+        <h2 id="h-credits">鸣谢</h2>
+      </div>
+      <div class="credits">
+        <a class="credit" href="https://github.com/acidanthera" target="_blank" rel="noopener">
+          <span class="name">Acidanthera</span>
+          <p class="desc">OpenCore 核心工具与驱动</p>
+        </a>
+        <a class="credit" href="https://github.com/dortania" target="_blank" rel="noopener">
+          <span class="name">Dortania</span>
+          <p class="desc">OpenCore 安装指南与文档</p>
+        </a>
+        <a class="credit" href="https://github.com/ChefKissInc/NootedRed" target="_blank" rel="noopener">
+          <span class="name">NootedRed</span>
+          <p class="desc">AMD iGPU 驱动</p>
+        </a>
+        <a class="credit" href="https://blog.daliansky.net/" target="_blank" rel="noopener">
+          <span class="name">黑果小兵</span>
+          <p class="desc">项目参考资料与 EFI 基础</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="wrap">
+    <p>Beelink SER5 Max Hackintosh · OpenCore EFI 配置 · 数据来源 <span class="mono">README.md</span></p>
+    <p style="margin-top:6px;">SMBIOS 信息为本机私有，未在此页展示。</p>
+  </footer>
+
+  <script>
+    (function () {
+      var KEY = 'beelink-theme';
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+
+      function apply(theme) {
+        root.setAttribute('data-theme', theme);
+        btn.textContent = theme === 'dark' ? '🌙 暗色' : '☀️ 亮色';
+      }
+
+      // 初始：优先已保存，其次系统偏好
+      if (saved) {
+        apply(saved);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        apply('light');
+      } else {
+        apply('dark');
+      }
+
+      btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        apply(next);
+        try { localStorage.setItem(KEY, next); } catch (e) {}
+      });
+    })();
+  </script>
+</body>
+</html>
