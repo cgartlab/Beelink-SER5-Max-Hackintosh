@@ -24,7 +24,7 @@ EFI/
 - **CPU**: AMD Ryzen 7 5800H (8C/16T) — extensive kernel patches (algrey's) required
 - **GPU**: Integrated AMD Radeon (via NootedRed.kext, no dGPU)
 - **Audio**: Realtek ALC (AppleALC_5800H.kext, layout-id=58)
-- **Ethernet**: Realtek RTL8125 2.5G (RealtekRTL8111.kext)
+- **Ethernet**: Realtek RTL8111 (RTL8168H/8111H 千兆, RealtekRTL8111.kext)
 - **WiFi/BT**: Intel AX200 (AirportItlwm)
 - **SMBIOS**: iMac20,1
 
@@ -46,14 +46,14 @@ Kexts are loaded per macOS version via MinKernel/MaxKernel ranges:
 ### Smol BIOS / SIP settings
 - `csr-active-config`: `AAAAAA==` (SIP fully enabled)
 - `SecureBootModel`: `j160`
-- `DummyPowerManagement`: true (required for AMD)
+- `DummyPowerManagement`: false
 - `DisableIoMapper`: true (AMD GPU quirk)
 - `ProvideCurrentCpuInfo`: true (AMD quirk)
 
 ### Not all kexts in the Kexts/ dir are loaded
 Unused kexts inside `Kexts/`:
 - `IO80211FamilyLegacy`, `IOSkywalkFamily` — not in Kernel.Add at all. Leftovers for BCM94360Z3 upgrade path.
-- `AppleIGC` — in Kernel.Add but `Enabled=false`. Intel 2.5G NIC backup; the RTL8125 currently uses `RealtekRTL8111.kext`.
+- `AppleIGC` — in Kernel.Add but `Enabled=false`. Intel 2.5G NIC backup; the RTL8111 currently uses `RealtekRTL8111.kext`.
 
 Do not enable them without testing.
 

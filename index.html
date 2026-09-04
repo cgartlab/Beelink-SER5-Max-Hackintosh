@@ -490,7 +490,7 @@
       <div class="specs-strip" aria-label="核心规格">
         <span class="chip">CPU <b>Ryzen 7 5800H</b></span>
         <span class="chip">iGPU <b>NootedRed</b></span>
-        <span class="chip">OpenCore <b>1.0.6</b></span>
+        <span class="chip">OpenCore <b>1.0.7</b></span>
         <span class="chip">macOS <b>Ventura 13.7.8</b></span>
         <span class="chip">SMBIOS <b>iMac20,1</b></span>
       </div>
@@ -520,10 +520,10 @@
           <tbody>
             <tr><td class="component">CPU</td><td class="mono">AMD Ryzen 7 5800H (8核/16线程)</td></tr>
             <tr><td class="component">内存</td><td class="mono">32GB DDR4 3200MHz</td></tr>
-            <tr><td class="component">硬盘</td><td class="mono">1TB NVMe SSD</td></tr>
+            <tr><td class="component">硬盘</td><td class="mono">500GB NVMe SSD（系统，APFS）</td></tr>
             <tr><td class="component">iGPU</td><td class="mono">AMD Radeon Graphics (NootedRed)</td></tr>
-            <tr><td class="component">有线网卡</td><td class="mono">Realtek RTL8125 2.5GbE</td></tr>
-            <tr><td class="component">无线网卡</td><td class="mono">Intel AX200 (WiFi 6 + 蓝牙 5.0)</td></tr>
+            <tr><td class="component">有线网卡</td><td class="mono">Realtek RTL8111（RTL8168H/8111H 千兆）</td></tr>
+            <tr><td class="component">无线网卡</td><td class="mono">Intel AX200（macOS 下 802.11ac；蓝牙 5.2）</td></tr>
             <tr><td class="component">声卡</td><td class="mono">Realtek ALC (layout-id=58)</td></tr>
           </tbody>
         </table>
@@ -538,7 +538,7 @@
       </div>
       <div class="kv-grid">
         <div class="kv"><span class="k">macOS</span><span class="v">Ventura 13.7.8</span></div>
-        <div class="kv"><span class="k">OpenCore</span><span class="v">1.0.6</span></div>
+        <div class="kv"><span class="k">OpenCore</span><span class="v">1.0.7</span></div>
         <div class="kv"><span class="k">SMBIOS</span><span class="v">iMac20,1</span></div>
       </div>
 
@@ -590,7 +590,7 @@
             <tr><td class="kext-name">VirtualSMC.kext</td><td><span class="ver">1.3.8</span></td><td>SMC 模拟</td></tr>
             <tr><td class="kext-name">NootedRed.kext</td><td><span class="ver">1.0.0</span></td><td>AMD iGPU 驱动</td></tr>
             <tr><td class="kext-name">AMDRyzenCPUPowerManagement.kext</td><td><span class="ver">0.7.2</span></td><td>AMD CPU 电源管理</td></tr>
-            <tr><td class="kext-name">SMCAMDProcessor.kext</td><td><span class="ver">1.0</span></td><td>AMD 处理器传感器</td></tr>
+            <tr><td class="kext-name">SMCAMDProcessor.kext</td><td><span class="ver">1.0.1</span></td><td>AMD 处理器传感器</td></tr>
             <tr><td class="kext-name">AppleALC_5800H.kext</td><td><span class="ver">1.8.5</span></td><td>声卡驱动 (layout-id 58)</td></tr>
             <tr><td class="kext-name">RealtekRTL8111.kext</td><td><span class="ver">3.0.4</span></td><td>有线网卡驱动</td></tr>
             <tr><td class="kext-name">AirportItlwm_for_Ventura.kext</td><td><span class="ver">2.2.0</span></td><td>Intel WiFi (Ventura)</td></tr>
@@ -623,6 +623,12 @@
         <h2 id="h-changelog">更新记录</h2>
       </div>
       <ol class="timeline">
+        <li class="tl-item">
+          <span class="tl-date">2026-03-20</span>
+          <div class="tl-body"><ul>
+            <li><span class="mono">OpenCore</span> 升级至 1.0.7（REL-107，2026-03-20 构建）</li>
+          </ul></div>
+        </li>
         <li class="tl-item">
           <span class="tl-date">2026-09-05</span>
           <div class="tl-body"><ul>

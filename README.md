@@ -12,10 +12,10 @@
 |------|------|
 | CPU | AMD Ryzen 7 5800H (8核/16线程) |
 | 内存 | 32GB DDR4 3200MHz |
-| 硬盘 | 1TB NVMe SSD |
+| 硬盘 | 500GB NVMe SSD（系统，APFS） |
 | iGPU | AMD Radeon Graphics (NootedRed) |
-| 有线网卡 | Realtek RTL8125 2.5GbE |
-| 无线网卡 | Intel AX200 (WiFi 6 + 蓝牙 5.0) |
+| 有线网卡 | Realtek RTL8111（RTL8168H/8111H 千兆） |
+| 无线网卡 | Intel AX200（macOS 下 802.11ac；蓝牙 5.2） |
 | 声卡 | Realtek ALC (layout-id=58) |
 
 ## 软件信息
@@ -23,7 +23,7 @@
 | 项目 | 版本 |
 |------|------|
 | macOS | Ventura 13.7.8 |
-| OpenCore | 1.0.6 |
+| OpenCore | 1.0.7 |
 | SMBIOS | iMac20,1 |
 
 ### 启动参数 (boot-args)
@@ -56,7 +56,7 @@ revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay
 | VirtualSMC.kext | 1.3.8 | SMC 模拟 |
 | NootedRed.kext | 1.0.0 | AMD iGPU 驱动 |
 | AMDRyzenCPUPowerManagement.kext | 0.7.2 | AMD CPU 电源管理 |
-| SMCAMDProcessor.kext | 1.0 | AMD 处理器传感器 |
+| SMCAMDProcessor.kext | 1.0.1 | AMD 处理器传感器 |
 | AppleALC_5800H.kext | 1.8.5 | 声卡驱动 (layout-id 58) |
 | RealtekRTL8111.kext | 3.0.4 | 有线网卡驱动 |
 | AirportItlwm_for_Ventura.kext | 2.2.0 | Intel WiFi (Ventura) |
@@ -77,6 +77,9 @@ revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay
 以及多个版本 AirportItlwm 以支持跨版本启动（Sonoma 14.4+ / Sonoma / Monterey / BigSur）。
 
 ## 更新记录
+
+### 2026-03-20
+- OpenCore 升级至 1.0.7（REL-107，2026-03-20 构建）
 
 ### 2026-09-05
 - NootedRed 升级至 1.0.0（官方正式版，bundle ID 改为 com.ChefKissInc.NootedRed）
