@@ -54,7 +54,7 @@ revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay
 |------|------|------|
 | Lilu.kext | 1.7.3 | 核心补丁框架 |
 | VirtualSMC.kext | 1.3.8 | SMC 模拟 |
-| NootedRed.kext | 0.8.10 | AMD iGPU 驱动 |
+| NootedRed.kext | 1.0.0 | AMD iGPU 驱动 |
 | AMDRyzenCPUPowerManagement.kext | 0.7.2 | AMD CPU 电源管理 |
 | SMCAMDProcessor.kext | 1.0 | AMD 处理器传感器 |
 | AppleALC_5800H.kext | 1.8.5 | 声卡驱动 (layout-id 58) |
@@ -77,6 +77,9 @@ revpatch=sbvmm revblock=media keepsyms=1 alcid=58 darkwake=0 -NRedDPDelay
 以及多个版本 AirportItlwm 以支持跨版本启动（Sonoma 14.4+ / Sonoma / Monterey / BigSur）。
 
 ## 更新记录
+
+### 2026-09-05
+- NootedRed 升级至 1.0.0（官方正式版，bundle ID 改为 com.ChefKissInc.NootedRed）
 
 ### 2026-07-25
 - NootedRed 升级至 0.8.10（回退 07-22 的降级操作）

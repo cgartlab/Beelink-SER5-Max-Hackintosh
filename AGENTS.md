@@ -9,9 +9,9 @@ EFI/
 ├── BOOT/BOOTx64.efi          # OpenCore bootloader
 └── OC/
     ├── config.plist           # Active config
-    ├── ACPI/                  # SSDT hotpatches (CPUR, EC, USB, USBX)
-    ├── Drivers/               # UEFI drivers (32 .efi files)
-    ├── Kexts/                 # 30 kernel extensions
+    ├── ACPI/                  # SSDT hotpatches (CPUR, EC, USB-Reset, USBW, USBX)
+    ├── Drivers/               # UEFI drivers (36 .efi files)
+    ├── Kexts/                 # 28 kernel extensions
     ├── Tools/                 # UEFI shell tools (OpenShell, CleanNvram, etc.)
     └── Resources/             # OpenCanopy GUI theme (DalianSky\BeeLink)
 .github/workflows/
@@ -51,7 +51,11 @@ Kexts are loaded per macOS version via MinKernel/MaxKernel ranges:
 - `ProvideCurrentCpuInfo`: true (AMD quirk)
 
 ### Not all kexts in the Kexts/ dir are loaded
-Unused kexts inside `Kexts/` (not in Kernel.Add): IO80211FamilyLegacy, IOSkywalkFamily. These are leftovers for BCM94360Z3 upgrade path. Do not enable them without testing.
+Unused kexts inside `Kexts/`:
+- `IO80211FamilyLegacy`, `IOSkywalkFamily` — not in Kernel.Add at all. Leftovers for BCM94360Z3 upgrade path.
+- `AppleIGC` — in Kernel.Add but `Enabled=false`. Intel 2.5G NIC backup; the RTL8125 currently uses `RealtekRTL8111.kext`.
+
+Do not enable them without testing.
 
 ## PlatformInfo sensitivity
 
